@@ -1,0 +1,92 @@
+- name: Install zsh
+  ansible.builtin.package:
+    name: zsh
+    state: present
+  become: true
+
+- name: Set user shell to zsh
+  ansible.builtin.user:
+    name: "{{ user }}"
+    shell: /bin/zsh
+  become: true
+
+- name: Download oh-my-zsh install script
+  ansible.builtin.get_url:
+    url: https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
+    dest: "/tmp/install-oh-my-zsh.sh"
+    mode: '0755'
+  become_user: "{{ user }}"
+
+- name: Check if oh-my-zsh is already installed
+  ansible.builtin.stat:
+    path: "/home/{{ user }}/.oh-my-zsh"
+  register: ohmyzsh_installed
+
+- name: Install oh-my-zsh (non-interactive)
+  ansible.builtin.shell: |
+    RUNZSH=no CHSH=no KEEP_ZSHRC=yes /tmp/install-oh-my-zsh.sh
+  args:
+    executable: /bin/bash
+  become: true
+  become_user: "{{ user }}"
+  when: not (ohmyzsh_installed.stat.exists)
+
+
+- name: Install PowerLevel10K
+  ansible.builtin.git:
+    repo: https://github.com/romkatv/powerlevel10k.git
+    dest: "/home/{{ user }}/.oh-my-zsh/custom/themes/powerlevel10k"
+    depth: 1
+    update: no
+  become: true
+  become_user: "{{ user }}"
+
+- name: Download NerdFonts (Meslo)
+  ansible.builtin.get_url:
+    url: https://github.com/ryanoasis/nerd-fonts/releases/download/v2.3.3/Meslo.zip
+    dest: "/tmp/Meslo.zip"
+    mode: '0644'
+  become: true
+
+- name: Ensure temp font extraction directory exists
+  ansible.builtin.file:
+    path: /tmp/MesloFonts
+    state: directory
+    mode: '0755'
+
+- name: Extract font files
+  ansible.builtin.unarchive:
+    src: "/tmp/Meslo.zip"
+    dest: "/tmp/MesloFonts"
+    remote_src: yes
+  become: true
+
+- name: Move fonts to system directory
+  ansible.builtin.copy:
+    src: "/tmp/MesloFonts"
+    dest: "/home/{{ user }}/.local/share/fonts/"
+    remote_src: yes
+    owner: "{{ user }}"
+    group: "{{ user }}"
+    mode: '0644'
+  become: true
+
+- name: Refresh font cache
+  ansible.builtin.command: fc-cache -fv
+  become: true
+
+- name: Copy preconfigured .zshrc
+  copy:
+    src: zshrc
+    dest: "/home/{{ user }}/.zshrc"
+    owner: "{{ user }}"
+    group: "{{ user }}"
+    mode: '0644'
+  
+- name: Copy preconfigured .p10k.zsh
+  copy:
+    src: p10k.zsh
+    dest: "/home/{{ user }}/.p10k.zsh"
+    owner: "{{ user }}"
+    group: "{{ user }}"
+    mode: '0644'

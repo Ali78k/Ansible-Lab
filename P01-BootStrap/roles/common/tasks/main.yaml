@@ -1,0 +1,5 @@
+- name: Install common packages
+  ansible.builtin.apt:
+    name: "{{ packages_common }}"
+    state: present
+    update_cache: true

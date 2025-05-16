@@ -1,0 +1,5 @@
+- name: Install deployment tools
+  ansible.builtin.apt:
+    name: "{{ packages_dep }}"
+    state: present
+    update_cache: true

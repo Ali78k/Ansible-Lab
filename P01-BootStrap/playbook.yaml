@@ -1,0 +1,24 @@
+- name: Bootstrap all servers
+  hosts: all
+  become: true
+  roles:
+    - common
+
+- name: Configure development servers
+  hosts: devservers
+  become: true
+  roles:
+    - devtools
+
+- name: Configure deployment servers
+  hosts: depservers
+  become: true
+  roles:
+    - deptools
+
+- name: Setup Zsh, Oh My Zsh, and PowerLevel10k
+  hosts: devservers
+  vars:
+    user: vagrant
+  roles:
+    - role: zsh

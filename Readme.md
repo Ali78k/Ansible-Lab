@@ -13,6 +13,8 @@ sudo apt update && sudo apt install vagrant
 ```
 ### Installing Dependencies
 ```
+sudo apt update
+sudo apt install nfs-kernel-server  
 sudo apt install -y vagrant qemu-kvm libvirt-daemon-system libvirt-clients virt-manager
 vagrant plugin install vagrant-libvirt
 ```
@@ -43,8 +45,39 @@ Use `virt-manager` to view or interact with the VMs if needed!
 
 ## Ansible
 ### Installing Ansible
-
+To install Ansible I use the [latest official documention](https://docs.ansible.com/ansible/latest/installation_guide/installation_distros.html). for `ubuntu` OS, commands bellow can be used.
+```
+sudo apt update
+sudo apt install software-properties-common
+sudo add-apt-repository --yes --update ppa:ansible/ansible
+sudo apt install ansible
+```
 
 ### Ad-Hoc cammands
+__1 - PING:__ Ping all inventory nodes.  
+```
+ansible all -i inventory/hosts.yaml -m ping
+```
+__2 - LIST:__ Check which commands are going to run in each nodes.
+```
+ansible-inventory -i inventory/hosts.yaml --list 
+```
 
 ### Playbooks
+To run an examplar scenario, `P01-BootStrap` can be used. It focus on bootstraping a fresh `debian-based` OS, like the condition in `Vagrantfile`.  
+So, first of all, run the Vagrant Nodes.
+```
+vagrant up --provider=libvirt
+```
+second of all, fill `inventory/hosts.yaml` IP address based on the last providing nodes information. Then, run the ping command. it should see the nodes, and it can connect via ssh and getting `pong` (because of the alternative of `ssh-copy-id` that is implemented in `Vagrantfile`)
+```
+cd P0-BootStrap
+vim inventory/hosts.yaml
+ansible-playbook -i inventory/hosts.yaml playbook.yaml  
+```
+third of all, run the prepared Playbook.  
+```
+cd P0-BootStrap
+ansible-playbook -i inventory/hosts.yaml playbook.yaml  
+```
+Finally, you can check the logs and use the managed nodes. in this case, `zsh` should be installed.

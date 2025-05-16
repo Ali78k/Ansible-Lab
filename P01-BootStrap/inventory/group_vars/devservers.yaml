@@ -1,0 +1,10 @@
+packages_dev:
+  - jq
+  - wget
+  - curl
+  - build-essential
+  - gcc
+  - make
+  - ca-certificates
+  - unzip
+  - fontconfig
