@@ -1,0 +1,4 @@
+docker_packages_state: latest
+docker_install_compose_plugin: true
+docker_users:
+  - vagrant

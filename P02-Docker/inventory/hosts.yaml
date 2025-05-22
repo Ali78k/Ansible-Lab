@@ -1,0 +1,20 @@
+all:
+  children:
+    devservers:
+      hosts:
+        dev-ubuntu:
+          ansible_host: 192.168.121.170
+          ansible_user: vagrant
+          ansible_port: 22
+    testservers:
+      hosts:
+        test-debian:
+          ansible_host: 192.168.121.192
+          ansible_user: vagrant
+          ansible_port: 22
+    depservers:
+      hosts:
+        dep-ubuntu:
+          ansible_host: 192.168.121.253
+          ansible_user: vagrant
+          ansible_port: 22

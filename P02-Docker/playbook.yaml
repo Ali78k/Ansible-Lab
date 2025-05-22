@@ -1,0 +1,14 @@
+- name: Install Docker and configure user access
+  hosts: all
+  become: true
+  roles:
+    - geerlingguy.docker
+
+# The task bellow is commented out because it is not needed when vagrant user added to the inventory/group_vars/docker_hosts/#docker_users.
+# Uncomment it if you need to add the user 'vagrant' to the docker group via tasks.
+  # tasks:
+  #   - name: Add user 'vagrant' to docker group
+  #     user:
+  #       name: vagrant
+  #       groups: docker
+  #       append: yes

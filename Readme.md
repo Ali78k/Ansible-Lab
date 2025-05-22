@@ -81,3 +81,21 @@ cd P0-BootStrap
 ansible-playbook -i inventory/hosts.yaml playbook.yaml  
 ```
 Finally, you can check the logs and use the managed nodes. in this case, `zsh` should be installed.
+
+### Galaxy
+There are somewhere to share Ansible roles in the __Galaxy__. `P02-Docker` uses `docker` prepared role to install docker on managed hosts. It is still needed to write a __Playbook__ to call the role like before. This role has many variables to change, accessible [here](https://github.com/geerlingguy/ansible-role-docker#role-variables) - check `Po2-Docker/inventory/group_vars/all.yaml`.  
+To get the role, run the command below:  
+```
+ansible-galaxy install geerlingguy.docker                                                                                                           ──(Thu,May22)─┘
+```
+To test the environment, run:  
+```
+vagrant up --provider=libvirt
+cd P02-Docker
+ansible all -i inventory/hosts.yaml -m ping
+```
+And run the playbook:  
+```
+ansible-playbook -i inventory/hosts.yaml playbook.yaml
+```
+Now, you can check the VMs via `vagrant ssh <VM-Names>.  
